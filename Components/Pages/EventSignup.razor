@@ -1,0 +1,77 @@
+@page "/eventsignup"
+@rendermode InteractiveServer
+@inject HttpClient Http
+@using System.Net.Http.Json
+@inject UserService UserService
+@inject EventService EventService
+@inject UserEventService UserEventService
+
+<PageTitle>Etkinliğe Katıl</PageTitle>
+
+@code {
+    private UserEvent newUserEvent = new UserEvent();
+    private UserEvent okUserEvent = new UserEvent();
+    private List<Event> evts;
+    private List<User> usrs;
+
+    protected override async Task  OnInitializedAsync()
+    {   
+        //users = await Http.GetFromJsonAsync<List<User>>("api/Users");
+        usrs = await UserService.GetAllUserAsync();
+        //events = await Http.GetFromJsonAsync<List<Event>>("api/Events");
+        evts = await EventService.GetAllEventAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var selectedEvent = evts.FirstOrDefault(e => e.Id == newUserEvent.EventId);
+        var selectedUser = usrs.FirstOrDefault(u => u.Id == newUserEvent.UserID);
+
+        if (selectedEvent != null && selectedUser != null)
+        {
+            newUserEvent.UserName = selectedUser.Name;
+            newUserEvent.EventName = selectedEvent.Name;
+            newUserEvent.EventDate = selectedEvent.Date;
+            newUserEvent.EventLocation = selectedEvent.Location;
+
+            //await Http.PostAsJsonAsync("api/UserEvent", newUserEvent);
+            okUserEvent = await UserEventService.CreateUserEventAsync(newUserEvent);
+            newUserEvent = new UserEvent();
+        }
+    }
+}
+
+<h3>Etkinliğe Katıl</h3>
+
+<EditForm Model="newUserEvent" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="UserID">Kullanıcı</label>
+        <InputSelect id="UserID" class="form-control" @bind-Value="newUserEvent.UserID">
+            @if (usrs != null)
+            {
+                @foreach (var user in usrs)
+                {
+                    <option value="@user.Id">@user.Name</option>
+                }
+            }
+        </InputSelect>
+    </div>
+
+    <div class="form-group">
+        <label for="EventID">Etkinlik</label>
+        <InputSelect id="EventID" class="form-control" @bind-Value="newUserEvent.EventId">
+            @if (evts != null)
+            {
+                @foreach (var ev in evts)
+                {
+                    <option value="@ev.Id">@ev.Name</option>
+                }
+            }
+        </InputSelect>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Kaydol</button>
+</EditForm>

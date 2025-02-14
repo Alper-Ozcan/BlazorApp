@@ -1,0 +1,59 @@
+@page "/edituser/{userId:int}"
+@rendermode InteractiveServer
+@using System.ComponentModel.DataAnnotations
+@inject UserService UserService
+@inject NavigationManager Navigation
+
+
+<h3>Kullanıcı Düzenleme</h3>
+
+@if (user == null)
+{
+    <p>Yükleniyor...</p>
+}
+else
+{
+    <EditForm Model="user" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div>
+            <label for="name">Ad</label>
+            <InputText id="name" @bind-Value="user.Name" placeholder="Ad" />
+            <ValidationMessage For="@(() => user.Name)" />
+        </div>
+        <div>
+            <label for="email">E-posta</label>
+            <InputText id="email" @bind-Value="user.Email" placeholder="E-posta" />
+            <ValidationMessage For="@(() => user.Email)" />
+        </div>
+        <div>
+            <label for="password">Şifre</label>
+            <InputText id="password" type="password" @bind-Value="user.Password" placeholder="Şifre" />
+            <ValidationMessage For="@(() => user.Password)" />
+        </div>
+        <div>
+            <label for="isAdmin">Yönetici mi?</label>
+            <InputCheckbox id="isAdmin" @bind-Value="user.IsAdmin" />
+        </div>
+
+        <button type="submit">Güncelle</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int userId { get; set; }
+    private User user = new User();
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserService.GetUserByIdAsync(userId);
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await UserService.UpdateUserAsync(userId, user);
+        Navigation.NavigateTo("/userlist");
+    }
+}

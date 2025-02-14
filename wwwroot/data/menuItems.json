@@ -1,0 +1,16 @@
+[
+    {
+        id="1",
+        "Title": "Home",
+        "Url": "/",
+        "IsAuthorized": false,
+        "IsAdminOnly": false
+    },
+    {
+        id="2",
+        "Title": "Admin",
+        "Url": "/admin",
+        "IsAuthorized": true,
+        "IsAdminOnly": true
+    }
+]

@@ -1,0 +1,32 @@
+@page "/register"
+@rendermode InteractiveServer
+
+@inject HttpClient Http
+@inject UserService UserService
+@inject NavigationManager Navigation
+
+
+
+<h3>Kayıt Ol</h3>
+
+<EditForm Model="userModel" OnValidSubmit="HandleValidSubmit" FormName="registerForm" class="form">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <InputText id="name" @bind-Value="userModel.Name" placeholder="Ad" />
+    <InputText id="email" @bind-Value="userModel.Email" placeholder="E-posta" />
+    <InputText id="password" type="password" @bind-Value="userModel.Password" placeholder="Şifre" />
+    <button type="submit">Kayıt Ol</button>
+</EditForm>
+
+@code {
+    private User user;
+    private User userModel = new User();
+    private async Task HandleValidSubmit()
+    {
+        user = await UserService.CreateUserAsync(userModel);
+        /*Console.WriteLine("Ad: " + userModel.Name);
+        Console.WriteLine("E-posta: " + userModel.Email);
+        Console.WriteLine("Şifre: " + userModel.Password);
+        await Task.Delay(200);*/
+    }
+}

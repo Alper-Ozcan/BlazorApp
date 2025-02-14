@@ -1,0 +1,60 @@
+@page "/eventlist"
+@rendermode InteractiveServer
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject EventService EventService
+<h3>Etkinlik Listesi</h3>
+
+@if (events == null)
+{
+    <p>Yükleniyor...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Adı</th>
+                <th>Tarih</th>
+                <th>Konum</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ev in events)
+            {
+                <tr>
+                    <td>@ev.Id</td>
+                    <td>@ev.Name</td>
+                    <td>@ev.Date.ToShortDateString()</td>
+                    <td>@ev.Location</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => EditEvent(ev.Id)">Düzenle</button>
+                        <button class="btn btn-danger" @onclick="() => DeleteEvent(ev.Id)">Sil</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Event> events;
+
+    protected override async Task OnInitializedAsync()
+    {
+        events = await EventService.GetAllEventAsync();
+    }
+
+    private void EditEvent(int eventId)
+    {
+        Navigation.NavigateTo($"/editevent/{eventId}");
+    }
+
+    private async Task DeleteEvent(int eventId)
+    {
+        await EventService.DeleteEventAsync(eventId);
+        events = await EventService.GetAllEventAsync();
+    }
+}

@@ -1,0 +1,67 @@
+@page "/userlist"
+@rendermode InteractiveServer
+@inject UserService UserService
+@inject NavigationManager Navigation
+
+<h3>Kullanıcı Listesi</h3>
+
+@if (users == null)
+{
+    <p>Yükleniyor...</p>
+}
+else if (users.Count == 0)
+{
+    <p>Kullanıcı bulunamadı.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>IsAdmin</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Name</td>
+                    <td>@user.Email</td>
+                    <td>@(user.Email == "admin@example.com" ? "Yes" : "No")</td>
+                    <td>
+                        <button @onclick="() => EditUser(user.Id)">Düzelt</button>
+                        <button @onclick="() => DeleteUser(user.Id)">Sil</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<User> users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await UserService.GetAllUserAsync();
+    }
+
+    private void EditUser(int userId)
+    {
+        // Kullanıcı düzenleme işlemi için gerekli kodları buraya ekleyin
+        //Console.WriteLine($"Edit user with id: {userId}");
+        Navigation.NavigateTo($"/edituser/{userId}");
+    }
+
+    private async Task DeleteUser(int userId)
+    {
+        // Kullanıcı silme işlemi için gerekli kodları buraya ekleyin
+        await UserService.DeleteUserAsync(userId);
+        users = await UserService.GetAllUserAsync(); // Listeyi güncelle
+    }
+}

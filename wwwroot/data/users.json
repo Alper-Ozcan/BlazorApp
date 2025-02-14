@@ -1,0 +1,7 @@
+[
+    { "Id": 1, "Name": "Admin", "Email": "admin@example.com", "Password": "1", "IsAdmin": true },
+    { "Id": 2, "Name": "User1", "Email": "user1@example.com", "Password": "1", "IsAdmin": false },
+    { "Id": 3, "Name": "User2", "Email": "user2@example.com", "Password": "2", "IsAdmin": false },
+    { "Id": 4, "Name": "User3", "Email": "user3@example.com", "Password": "3", "IsAdmin": false },
+    { "Id": 5, "Name": "User4", "Email": "user4@example.com", "Password": "4", "IsAdmin": false }
+]

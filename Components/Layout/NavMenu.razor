@@ -1,0 +1,38 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">BlazorServerApp</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="nav flex-column">
+        <div class="nav-item px-3">
+            @if (menuItems != null)
+            {
+                @foreach (var item in menuItems)
+                {
+                    <a class="nav-link" href="@item.Url">@item.Title</a>
+                }
+            }
+        </div>
+    </nav>
+</div>
+
+@code {
+    [Inject] private MenuService MenuService { get; set; }
+    private bool collapseNavMenu;
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : string.Empty;
+
+    private List<Menu> menuItems = new List<Menu>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        menuItems = await MenuService.GetAllMenuAsync();
+    }
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

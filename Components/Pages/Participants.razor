@@ -1,0 +1,51 @@
+@page "/participants"
+@rendermode InteractiveServer
+@inject HttpClient Http
+@inject UserEventService UserEventService
+
+<PageTitle>Katılımcılar</PageTitle>
+
+@code {
+    private List<UserEvent> usrEvts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //usrEvts = await Http.GetFromJsonAsync<List<UserEvent>>("api/UserEvent");
+        usrEvts = await UserEventService.GetAllUserEventAsync();
+    }
+}
+
+<h3>Katılımcılar</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Kullanıcı Adı</th>
+            <th>Etkinlik Adı</th>
+            <th>Etkinlik Tarihi</th>
+            <th>Etkinlik Konumu</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (usrEvts != null)
+        {
+            @foreach (var userEvent in usrEvts)
+            {
+                <tr>
+                    <td>@userEvent.UEId</td>
+                    <td>@userEvent.UserName</td>
+                    <td>@userEvent.EventName</td>
+                    <td>@userEvent.EventDate.ToString("yyyy-MM-dd")</td>
+                    <td>@userEvent.EventLocation</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5">Katılımcı yok.</td>
+            </tr>
+        }
+    </tbody>
+</table>

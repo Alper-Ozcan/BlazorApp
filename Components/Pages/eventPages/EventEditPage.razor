@@ -1,0 +1,54 @@
+@page "/editevent/{eventId:int}"
+@rendermode InteractiveServer
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject EventService EventService
+
+
+<h3>Etkinliği Güncelle</h3>
+
+@if (updatedEvt == null)
+{
+    <p>Yükleniyor...</p>
+}
+else
+{
+    <EditForm Model="updatedEvt" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="name">Adı:</label>
+            <InputText id="name" class="form-control" @bind-Value="updatedEvt.Name" />
+        </div>
+        <div class="form-group">
+            <label for="date">Tarih:</label>
+            <InputDate id="date" class="form-control" @bind-Value="updatedEvt.Date" />
+        </div>
+        <div class="form-group">
+            <label for="location">Konum:</label>
+            <InputText id="location" class="form-control" @bind-Value="updatedEvt.Location" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Güncelle</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter] 
+    public int eventId { get; set; }
+    private Event updatedEvt = new Event();
+    private Event evt;
+    protected override async Task OnInitializedAsync()
+    {
+        updatedEvt = await EventService.GetEventByIdAsync(eventId);
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await EventService.UpdateEventAsync(eventId, updatedEvt);
+
+            Navigation.NavigateTo("/eventlist");
+
+    }
+}

@@ -1,0 +1,10 @@
+
+###Menu Listeleme (GET)
+GET http://localhost:5500/api/Menu
+Content-Type: application/json
+//Content-Type: text/html
+
+###Menu Listeleme (GET)
+GET http://localhost:5500/api/Menu/2
+Content-Type: application/json
+

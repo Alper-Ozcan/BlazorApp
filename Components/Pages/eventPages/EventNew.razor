@@ -1,0 +1,38 @@
+@page "/newevent"
+@rendermode InteractiveServer
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject EventService EventService
+
+<h3>Yeni Etkinlik Ekle</h3>
+
+<EditForm Model="newEvt" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="name">Adı:</label>
+        <InputText id="name" class="form-control" @bind-Value="newEvt.Name" />
+    </div>
+    <div class="form-group">
+        <label for="date">Tarih:</label>
+        <InputDate id="date" class="form-control" @bind-Value="newEvt.Date" />
+    </div>
+    <div class="form-group">
+        <label for="location">Konum:</label>
+        <InputText id="location" class="form-control" @bind-Value="newEvt.Location" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Ekle</button>
+</EditForm>
+
+@code {
+    private Event newEvt = new Event();
+
+    private async Task HandleValidSubmit()
+    {
+        //var response = await Http.PostAsJsonAsync("api/Event", newEvent);
+        var response = await EventService.CreateEventAsync(newEvt);
+        Navigation.NavigateTo("/eventlist");
+    }
+}
